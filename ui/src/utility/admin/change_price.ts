@@ -2,6 +2,16 @@ import { Transaction } from "@mysten/sui/transactions";
 
 export const changePrice = (packageId: string, listHeroId: string, newPriceInSui: string, adminCapId: string) => {
   const tx = new Transaction();
+  const SUI_TO_MIST = 1_000_000_000;
+  const newPriceInMist = BigInt(Math.floor(parseFloat(newPriceInSui) * SUI_TO_MIST));
+  tx.moveCall({
+    target: `${packageId}::marketplace::change_the_price`,
+    arguments: [
+      tx.object(adminCapId),
+      tx.object(listHeroId),
+      tx.pure.u64(newPriceInMist),
+    ],
+  });
   
   // TODO: Convert SUI to MIST (1 SUI = 1,000,000,000 MIST)
     // Hints:
